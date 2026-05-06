@@ -1,13 +1,23 @@
 <%
-  totals = hm_totals_by_day(entries, user.time_zone)
-  cells  = hm_calendar_cells(month)
-  day_names = (I18n.t('date.abbr_day_names') || %w[Sun Mon Tue Wed Thu Fri Sat]).rotate(1)
+  totals          = hm_totals_by_day(entries, user&.time_zone)
+  cells           = hm_calendar_cells(month)
+  absences_by_day = local_assigns[:absences_by_day]
+  day_link        = local_assigns[:day_link]
+  show_users      = local_assigns[:show_users_in_absence]
+  day_names       = (I18n.t('date.abbr_day_names') || %w[Sun Mon Tue Wed Thu Fri Sat]).rotate(1)
 %>
 <div class="hm-tc-calendar">
   <div class="hm-tc-calendar-nav">
     <%= link_to '«', base_path.call(month.prev_month), class: 'hm-tc-cal-nav-btn' %>
     <span class="hm-tc-calendar-title"><%= I18n.l(month, format: '%B %Y') %></span>
     <%= link_to '»', base_path.call(month.next_month), class: 'hm-tc-cal-nav-btn' %>
+    <% if absences_by_day %>
+      <span class="hm-tc-cal-legend">
+        <span class="hm-tc-cal-legend-swatch hm-tc-cal-legend-vacation"></span> <%= l(:label_hm_hr_vacation) %>
+        <span class="hm-tc-cal-legend-swatch hm-tc-cal-legend-sickness"></span> <%= l(:label_hm_hr_sickness) %>
+        <span class="hm-tc-cal-legend-swatch hm-tc-cal-legend-pending"></span> <%= l(:label_hm_absence_pending_legend) %>
+      </span>
+    <% end %>
   </div>
   <table class="hm-tc-calendar-grid">
     <thead>
@@ -21,12 +31,46 @@
       <% cells.each_slice(7) do |week| %>
         <tr>
           <% week.each do |day| %>
-            <td class="<%= 'hm-tc-cal-empty' if day.nil? %><%= ' hm-tc-cal-today' if day == Date.current %><%= ' hm-tc-cal-weekend' if day && [6, 7].include?(day.cwday) %>">
+            <%
+              cell_classes = []
+              cell_classes << 'hm-tc-cal-empty'   unless day
+              cell_classes << 'hm-tc-cal-today'   if day && day == Date.current
+              cell_classes << 'hm-tc-cal-weekend' if day && [6, 7].include?(day.cwday)
+
+              day_absences = (day && absences_by_day) ? (absences_by_day[day] || []) : []
+              if day_absences.any? && !show_users
+                if day_absences.any? { |a| a.kind == HmAbsence::KIND_VACATION }
+                  cell_classes << 'hm-tc-cal-vacation'
+                  cell_classes << 'hm-tc-cal-pending-vacation' if day_absences.select { |a| a.kind == HmAbsence::KIND_VACATION }.all?(&:requested?)
+                end
+                if day_absences.any? { |a| a.kind == HmAbsence::KIND_SICKNESS }
+                  cell_classes << 'hm-tc-cal-sickness'
+                  cell_classes << 'hm-tc-cal-pending-sickness' if day_absences.select { |a| a.kind == HmAbsence::KIND_SICKNESS }.all?(&:requested?)
+                end
+              end
+            %>
+            <td class="<%= cell_classes.join(' ') %>">
               <% if day %>
-                <div class="hm-tc-cal-date"><%= day.day %></div>
+                <% if day_link %>
+                  <%= link_to day_link.call(day), class: 'hm-tc-cal-day-link' do %>
+                    <div class="hm-tc-cal-date"><%= day.day %></div>
+                  <% end %>
+                <% else %>
+                  <div class="hm-tc-cal-date"><%= day.day %></div>
+                <% end %>
                 <% sec = totals[day].to_i %>
                 <% if sec > 0 %>
                   <div class="hm-tc-cal-hours"><%= hm_format_seconds(sec) %></div>
+                <% end %>
+                <% if show_users && day_absences.any? %>
+                  <div class="hm-tc-cal-users">
+                    <% day_absences.each do |a| %>
+                      <span class="hm-tc-cal-user-pill hm-tc-cal-user-pill-<%= a.kind %><%= ' hm-tc-cal-user-pill-pending' if a.requested? %>"
+                            title="<%= h(a.user.name) %> — <%= h(HmAbsence.kind_label(a.kind)) %> (<%= h(HmAbsence.status_label(a.status)) %>)">
+                        <%= h(a.user.login) %>
+                      </span>
+                    <% end %>
+                  </div>
                 <% end %>
               <% end %>
             </td>

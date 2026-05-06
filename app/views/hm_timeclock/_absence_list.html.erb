@@ -1,0 +1,53 @@
+<% if absences.empty? %>
+  <p class="nodata"><%= l(:label_hm_absence_none) %></p>
+<% else %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th><%= l(:label_hm_absence_period) %></th>
+        <th><%= l(:label_hm_absence_days) %></th>
+        <th><%= l(:label_hm_absence_status) %></th>
+        <th><%= l(:label_hm_absence_reason) %></th>
+        <th><%= l(:label_hm_absence_approved_by) %></th>
+        <% if local_assigns[:show_user] %>
+          <th><%= l(:label_hm_admin_user) %></th>
+        <% end %>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% absences.each do |a| %>
+        <tr class="hm-tc-abs-row hm-tc-abs-<%= a.status %>">
+          <td><%= I18n.l(a.starts_on) %> — <%= I18n.l(a.ends_on) %></td>
+          <td><%= a.days %></td>
+          <td>
+            <span class="hm-tc-abs-pill hm-tc-abs-pill-<%= a.kind %><%= ' hm-tc-abs-pill-pending' if a.requested? %>">
+              <%= HmAbsence.kind_label(a.kind) %> · <%= HmAbsence.status_label(a.status) %>
+            </span>
+          </td>
+          <td><%= h a.reason %></td>
+          <td>
+            <% if a.approver %>
+              <%= h a.approver.name %><br>
+              <small><%= format_time(a.approved_at) if a.approved_at %></small>
+            <% end %>
+          </td>
+          <% if local_assigns[:show_user] %>
+            <td><%= link_to h(a.user.name), hm_admin_user_path(user_id: a.user.id) %></td>
+          <% end %>
+          <td class="hm-tc-abs-actions">
+            <% if User.current.admin? && a.requested? %>
+              <%= button_to l(:button_hm_absence_approve), approve_hm_absence_path(id: a.id), method: :post, class: 'button-positive' %>
+              <%= button_to l(:button_hm_absence_reject),  reject_hm_absence_path(id: a.id),  method: :post, class: 'button-negative' %>
+            <% end %>
+            <% if (a.user_id == User.current.id && a.requested?) || User.current.admin? %>
+              <%= link_to l(:button_hm_absence_edit), edit_hm_absence_path(id: a.id), class: 'icon icon-edit' %>
+              <%= button_to l(:button_hm_absence_delete), hm_absence_path(id: a.id), method: :delete, class: 'icon icon-del',
+                            data: { confirm: l(:text_are_you_sure) } %>
+            <% end %>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>

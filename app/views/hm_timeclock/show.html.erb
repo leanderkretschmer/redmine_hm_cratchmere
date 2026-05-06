@@ -81,5 +81,6 @@
 <h3><%= l(:label_hm_timeclock_calendar) %></h3>
 <%= render partial: 'calendar', locals: {
       month: @month, entries: @entries_month, user: User.current,
-      base_path: ->(m) { hm_timeclock_path(month: m.strftime('%Y-%m')) }
+      base_path: ->(m) { hm_timeclock_path(month: m.strftime('%Y-%m')) },
+      absences_by_day: @absences_by_day
     } %>

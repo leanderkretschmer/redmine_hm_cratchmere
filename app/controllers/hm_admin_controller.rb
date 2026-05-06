@@ -4,12 +4,30 @@ class HmAdminController < ApplicationController
   helper :hm_timeclock
 
   def index
-    user_ids = HmWorkEntry.distinct.pluck(:user_id)
-    @users = User.where(id: user_ids).sorted.to_a
-    @summaries = @users.each_with_object({}) do |u, h|
-      h[u.id] = compute_summary(u)
+    @month = parse_month_param || Date.current.beginning_of_month
+
+    base_user_ids = (HmWorkEntry.distinct.pluck(:user_id) + HmAbsence.distinct.pluck(:user_id)).uniq
+    relation = User.where(id: base_user_ids)
+
+    @filter_login = params[:filter_login].to_s.strip
+    @filter_mail  = params[:filter_mail].to_s.strip
+    @filter_name  = params[:filter_name].to_s.strip
+
+    relation = relation.where('LOWER(login) LIKE ?', "%#{@filter_login.downcase}%") if @filter_login.present?
+    relation = relation.where('LOWER(mail) LIKE ?',  "%#{@filter_mail.downcase}%")  if @filter_mail.present?
+    if @filter_name.present?
+      n = "%#{@filter_name.downcase}%"
+      relation = relation.where('LOWER(firstname) LIKE :n OR LOWER(lastname) LIKE :n', n: n)
     end
+    @users = relation.sorted.to_a
+    @summaries = @users.each_with_object({}) { |u, h| h[u.id] = compute_summary(u) }
     @users.sort_by! { |u| -(@summaries[u.id][:month].to_i) }
+
+    range_from = @month
+    range_to   = @month.end_of_month
+    overlay = HmAbsence.active.overlapping(range_from, range_to).includes(:user).to_a
+    @absences_by_day = HmAbsence.build_by_day(overlay, range_from, range_to)
+    @pending_absences = HmAbsence.pending.includes(:user, :approver).order(:starts_on).limit(100).to_a
   end
 
   def show
@@ -20,6 +38,11 @@ class HmAdminController < ApplicationController
                           .in_range(@month.in_time_zone(tz).beginning_of_day,
                                     @month.end_of_month.in_time_zone(tz).end_of_day)
                           .order(:started_at).to_a
+    range_from = @month
+    range_to   = @month.end_of_month
+    overlay = HmAbsence.for_user(@user).active.overlapping(range_from, range_to).to_a
+    @absences_by_day = HmAbsence.build_by_day(overlay, range_from, range_to)
+    @absences = HmAbsence.for_user(@user).order(starts_on: :desc).limit(50).to_a
     @summary = compute_summary(@user)
     respond_to do |format|
       format.html
@@ -29,6 +52,16 @@ class HmAdminController < ApplicationController
                   type: 'text/csv; charset=utf-8'
       end
     end
+  end
+
+  def day
+    @date = Date.parse(params[:date])
+    range_from = @date.beginning_of_day
+    range_to   = @date.end_of_day
+    @entries  = HmWorkEntry.in_range(range_from, range_to).includes(:user).order(:started_at).to_a
+    @absences = HmAbsence.where('starts_on <= ? AND ends_on >= ?', @date, @date).includes(:user, :approver).to_a
+  rescue ArgumentError
+    redirect_to hm_admin_path
   end
 
   private
@@ -60,5 +93,4 @@ class HmAdminController < ApplicationController
       last_entry: last
     }
   end
-
 end

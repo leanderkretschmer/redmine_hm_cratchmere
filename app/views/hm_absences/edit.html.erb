@@ -1,0 +1,12 @@
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
+<% end %>
+
+<h2><%= l(:label_hm_absence_edit_title, kind: HmAbsence.kind_label(@absence.kind)) %></h2>
+
+<%= render partial: 'hm_timeclock/absence_form', locals: {
+      absence: @absence,
+      form_url: hm_absence_path(id: @absence.id),
+      form_method: :patch,
+      submit_label: l(:button_hm_absence_save)
+    } %>

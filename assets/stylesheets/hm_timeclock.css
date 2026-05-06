@@ -241,6 +241,81 @@ table.hm-tc-calendar-grid {
   outline: 2px solid #f1c40f;
   outline-offset: -2px;
 }
+.hm-tc-cal-vacation              { background-color: #d6eaf8; }
+.hm-tc-cal-vacation.hm-tc-cal-pending-vacation {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,255,255,0.85) 6px, rgba(255,255,255,0.85) 12px);
+}
+.hm-tc-cal-sickness              { background-color: #fadbd8; }
+.hm-tc-cal-sickness.hm-tc-cal-pending-sickness {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 6px, rgba(255,255,255,0.85) 6px, rgba(255,255,255,0.85) 12px);
+}
+.hm-tc-cal-vacation.hm-tc-cal-sickness {
+  background-color: #d6eaf8;
+  background-image: linear-gradient(135deg, transparent 50%, #fadbd8 50%);
+}
+.hm-tc-cal-day-link { text-decoration: none; color: inherit; display: block; }
+.hm-tc-cal-day-link:hover .hm-tc-cal-date { text-decoration: underline; color: #1abc9c; }
+.hm-tc-cal-users { margin-top: 0.25em; line-height: 1.4; }
+.hm-tc-cal-user-pill {
+  display: inline-block;
+  padding: 1px 5px;
+  margin: 1px 1px 0 0;
+  font-size: 0.78em;
+  border-radius: 3px;
+  color: #fff;
+  font-weight: 500;
+}
+.hm-tc-cal-user-pill-vacation { background: #3498db; }
+.hm-tc-cal-user-pill-sickness { background: #e74c3c; }
+.hm-tc-cal-user-pill-pending {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.45) 4px, rgba(255,255,255,0.45) 8px);
+  border: 1px dashed rgba(255,255,255,0.85);
+  padding: 0 4px;
+}
+.hm-tc-cal-legend {
+  margin-left: auto;
+  font-size: 0.85em;
+  color: #555;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4em;
+}
+.hm-tc-cal-legend-swatch {
+  display: inline-block;
+  width: 14px;
+  height: 14px;
+  margin-right: 2px;
+  vertical-align: middle;
+  border-radius: 2px;
+}
+.hm-tc-cal-legend-vacation { background: #3498db; }
+.hm-tc-cal-legend-sickness { background: #e74c3c; }
+.hm-tc-cal-legend-pending  {
+  background:
+    repeating-linear-gradient(45deg, #95a5a6, #95a5a6 4px, #fff 4px, #fff 8px);
+}
+
+.hm-tc-abs-pill {
+  display: inline-block;
+  padding: 1px 8px;
+  border-radius: 12px;
+  color: #fff;
+  font-weight: 500;
+  font-size: 0.85em;
+}
+.hm-tc-abs-pill-vacation { background: #3498db; }
+.hm-tc-abs-pill-sickness { background: #e74c3c; }
+.hm-tc-abs-pill-pending {
+  background-image: repeating-linear-gradient(45deg, transparent, transparent 4px, rgba(255,255,255,0.45) 4px, rgba(255,255,255,0.45) 8px);
+  border: 1px dashed rgba(255,255,255,0.9);
+}
+.hm-tc-abs-rejected td { color: #999; text-decoration: line-through; }
+.hm-tc-abs-actions form { display: inline-block; margin: 0 0.2em 0 0; }
+.hm-tc-absence-form .box { max-width: 640px; }
+
+.hm-admin-filters fieldset { padding: 0.4em 1em 0.6em; }
+.hm-admin-filters label { margin-right: 0.3em; font-weight: 600; }
+.hm-admin-filters input[type="text"] { margin-right: 1em; }
 .hm-tc-cal-date  { font-weight: 600; color: #2c3e50; }
 .hm-tc-cal-hours {
   margin-top: 0.3em;

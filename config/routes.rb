@@ -13,11 +13,22 @@ RedmineApp::Application.routes.draw do
     get   'export',   to: 'hm_timeclock#export',          as: 'export_hm_timeclock'
   end
 
-  get 'hm_vacation', to: 'hm_vacation#show', as: 'hm_vacation'
-  get 'hm_sickness', to: 'hm_sickness#show', as: 'hm_sickness'
+  get  'hm_vacation', to: 'hm_vacation#show',   as: 'hm_vacation'
+  post 'hm_vacation', to: 'hm_vacation#create'
+  get  'hm_sickness', to: 'hm_sickness#show',   as: 'hm_sickness'
+  post 'hm_sickness', to: 'hm_sickness#create'
+
+  get    'hm_absences/:id/edit',     to: 'hm_absences#edit',    as: 'edit_hm_absence'
+  patch  'hm_absences/:id',          to: 'hm_absences#update',  as: 'hm_absence'
+  put    'hm_absences/:id',          to: 'hm_absences#update'
+  delete 'hm_absences/:id',          to: 'hm_absences#destroy'
+  post   'hm_absences/:id/approve',  to: 'hm_absences#approve', as: 'approve_hm_absence'
+  post   'hm_absences/:id/reject',   to: 'hm_absences#reject',  as: 'reject_hm_absence'
 
   scope 'admin/hm_timeclock' do
-    get 'users/:user_id', to: 'hm_admin#show',  as: 'hm_admin_user'
-    get '',               to: 'hm_admin#index', as: 'hm_admin'
+    get 'day/:date',       to: 'hm_admin#day',   as: 'hm_admin_day',
+        constraints: { date: /\d{4}-\d{2}-\d{2}/ }
+    get 'users/:user_id',  to: 'hm_admin#show',  as: 'hm_admin_user'
+    get '',                to: 'hm_admin#index', as: 'hm_admin'
   end
 end

@@ -14,6 +14,8 @@ class HmTimeclockController < ApplicationController
                                 .in_range(@month.in_time_zone(tz).beginning_of_day,
                                           @month.end_of_month.in_time_zone(tz).end_of_day)
                                 .order(:started_at).to_a
+    overlay = HmAbsence.for_user(User.current).active.overlapping(@month, @month.end_of_month).to_a
+    @absences_by_day = HmAbsence.build_by_day(overlay, @month, @month.end_of_month)
     @snapshot = build_snapshot
   end
 

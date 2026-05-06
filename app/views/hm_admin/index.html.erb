@@ -5,6 +5,48 @@
 <h2><%= l(:label_hm_admin) %></h2>
 <p><%= l(:label_hm_admin_overview) %></p>
 
+<h3><%= l(:label_hm_admin_global_calendar) %></h3>
+<%= render partial: 'hm_timeclock/calendar', locals: {
+      month: @month, entries: [], user: nil,
+      base_path: ->(m) { hm_admin_path(month: m.strftime('%Y-%m'),
+                                       filter_login: @filter_login,
+                                       filter_mail:  @filter_mail,
+                                       filter_name:  @filter_name) },
+      absences_by_day: @absences_by_day,
+      day_link: ->(d) { hm_admin_day_path(date: d.strftime('%Y-%m-%d')) },
+      show_users_in_absence: true
+    } %>
+
+<% if @pending_absences.any? %>
+  <h3><%= l(:label_hm_admin_pending_approvals) %></h3>
+  <%= render partial: 'hm_timeclock/absence_list', locals: {
+        absences: @pending_absences,
+        show_user: true
+      } %>
+<% end %>
+
+<h3><%= l(:label_hm_admin_users) %></h3>
+
+<%= form_with url: hm_admin_path, method: :get, local: true, html: { class: 'hm-admin-filters' } do %>
+  <%= hidden_field_tag :month, @month.strftime('%Y-%m') %>
+  <fieldset class="collapsible">
+    <legend><%= l(:label_hm_admin_filters) %></legend>
+    <p>
+      <label for="filter_login"><%= l(:field_login) %></label>
+      <%= text_field_tag :filter_login, @filter_login, size: 16, id: 'filter_login' %>
+
+      <label for="filter_mail"><%= l(:field_mail) %></label>
+      <%= text_field_tag :filter_mail, @filter_mail, size: 24, id: 'filter_mail' %>
+
+      <label for="filter_name"><%= l(:field_name) %></label>
+      <%= text_field_tag :filter_name, @filter_name, size: 24, id: 'filter_name' %>
+
+      <%= submit_tag l(:button_apply), name: nil %>
+      <%= link_to l(:button_clear), hm_admin_path(month: @month.strftime('%Y-%m')), class: 'icon icon-reload' %>
+    </p>
+  </fieldset>
+<% end %>
+
 <% if @users.empty? %>
   <p class="nodata"><%= l(:label_hm_admin_no_users) %></p>
 <% else %>
@@ -12,6 +54,8 @@
     <thead>
       <tr>
         <th><%= l(:label_hm_admin_user) %></th>
+        <th><%= l(:field_login) %></th>
+        <th><%= l(:field_mail) %></th>
         <th><%= l(:label_hm_admin_total_today) %></th>
         <th><%= l(:label_hm_admin_total_week) %></th>
         <th><%= l(:label_hm_admin_total_month) %></th>
@@ -23,6 +67,8 @@
         <% s = @summaries[u.id] %>
         <tr class="<%= cycle('odd', 'even') %>">
           <td><%= link_to u.name, hm_admin_user_path(user_id: u.id) %></td>
+          <td><%= h u.login %></td>
+          <td><%= h u.mail %></td>
           <td><%= hm_format_seconds(s[:today]) %></td>
           <td><%= hm_format_seconds(s[:week]) %></td>
           <td><%= hm_format_seconds(s[:month]) %></td>
