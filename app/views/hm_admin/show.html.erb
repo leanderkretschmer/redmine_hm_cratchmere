@@ -1,0 +1,32 @@
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
+<% end %>
+
+<div class="contextual">
+  <%= link_to l(:label_hm_admin_export_csv),
+              hm_admin_user_path(user_id: @user.id, month: @month.strftime('%Y-%m'), format: :csv),
+              class: 'icon icon-download' %>
+  <%= link_to l(:label_hm_admin_back), hm_admin_path, class: 'icon icon-back' %>
+</div>
+
+<h2><%= l(:label_hm_admin) %> — <%= h @user.name %></h2>
+
+<div class="hm-tc-calendar-nav">
+  <%= link_to '«', hm_admin_user_path(user_id: @user.id, month: @month.prev_month.strftime('%Y-%m')), class: 'hm-tc-cal-nav-btn' %>
+  <span class="hm-tc-calendar-title"><%= I18n.l(@month, format: '%B %Y') %></span>
+  <%= link_to '»', hm_admin_user_path(user_id: @user.id, month: @month.next_month.strftime('%Y-%m')), class: 'hm-tc-cal-nav-btn' %>
+</div>
+
+<div class="hm-tc-meta">
+  <div><strong><%= l(:label_hm_admin_total_today) %>:</strong> <%= hm_format_seconds(@summary[:today]) %></div>
+  <div><strong><%= l(:label_hm_admin_total_week) %>:</strong>  <%= hm_format_seconds(@summary[:week]) %></div>
+  <div><strong><%= l(:label_hm_admin_total_month) %>:</strong> <%= hm_format_seconds(@summary[:month]) %></div>
+</div>
+
+<%= render partial: 'hm_timeclock/calendar', locals: {
+      month: @month, entries: @entries, user: @user,
+      base_path: ->(m) { hm_admin_user_path(user_id: @user.id, month: m.strftime('%Y-%m')) }
+    } %>
+
+<h3><%= l(:label_hm_timeclock_history) %></h3>
+<%= render partial: 'hm_timeclock/entries_table', locals: { entries: @entries } %>

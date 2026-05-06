@@ -1,0 +1,7 @@
+<% if User.current.logged? %>
+  <%= stylesheet_link_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
+  <%= javascript_include_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
+  <% poll = (Setting.plugin_redmine_hm_cratchmere || {})['poll_interval_seconds'].to_i %>
+  <% poll = 30 unless poll.positive? %>
+  <%= javascript_tag "window.HmTimeclock = window.HmTimeclock || {}; window.HmTimeclock.bootstrap = { statusUrl: '#{j hm_timeclock_status_path(format: :json)}', pollIntervalSeconds: #{poll} };" %>
+<% end %>

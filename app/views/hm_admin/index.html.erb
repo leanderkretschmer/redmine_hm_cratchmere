@@ -1,0 +1,39 @@
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
+<% end %>
+
+<h2><%= l(:label_hm_admin) %></h2>
+<p><%= l(:label_hm_admin_overview) %></p>
+
+<% if @users.empty? %>
+  <p class="nodata"><%= l(:label_hm_admin_no_users) %></p>
+<% else %>
+  <table class="list">
+    <thead>
+      <tr>
+        <th><%= l(:label_hm_admin_user) %></th>
+        <th><%= l(:label_hm_admin_total_today) %></th>
+        <th><%= l(:label_hm_admin_total_week) %></th>
+        <th><%= l(:label_hm_admin_total_month) %></th>
+        <th><%= l(:label_hm_admin_last_entry) %></th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @users.each do |u| %>
+        <% s = @summaries[u.id] %>
+        <tr class="<%= cycle('odd', 'even') %>">
+          <td><%= link_to u.name, hm_admin_user_path(user_id: u.id) %></td>
+          <td><%= hm_format_seconds(s[:today]) %></td>
+          <td><%= hm_format_seconds(s[:week]) %></td>
+          <td><%= hm_format_seconds(s[:month]) %></td>
+          <td><%= s[:last_entry] ? format_time(s[:last_entry].started_at) : '—' %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% end %>
+
+<div class="hm-tc-compliance">
+  <h4><%= l(:label_hm_timeclock_compliance_note) %></h4>
+  <p><%= l(:label_hm_timeclock_eu_compliance) %></p>
+</div>

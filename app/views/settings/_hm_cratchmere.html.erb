@@ -1,0 +1,54 @@
+<div class="box tabular settings">
+  <p>
+    <label for="settings_default_daily_target_minutes"><%= l(:hm_settings_default_daily) %></label>
+    <%= text_field_tag 'settings[default_daily_target_minutes]',
+                       @settings['default_daily_target_minutes'], size: 6 %>
+  </p>
+  <p>
+    <label for="settings_default_weekly_target_minutes"><%= l(:hm_settings_default_weekly) %></label>
+    <%= text_field_tag 'settings[default_weekly_target_minutes]',
+                       @settings['default_weekly_target_minutes'], size: 6 %>
+  </p>
+  <p>
+    <label for="settings_default_max_break_minutes"><%= l(:hm_settings_default_break) %></label>
+    <%= text_field_tag 'settings[default_max_break_minutes]',
+                       @settings['default_max_break_minutes'], size: 6 %>
+  </p>
+  <p>
+    <label for="settings_overtime_threshold_minutes"><%= l(:hm_settings_overtime_threshold) %></label>
+    <%= text_field_tag 'settings[overtime_threshold_minutes]',
+                       @settings['overtime_threshold_minutes'], size: 6 %>
+  </p>
+  <p>
+    <label for="settings_enable_target_notifications"><%= l(:hm_settings_enable_target_notifications) %></label>
+    <%= hidden_field_tag 'settings[enable_target_notifications]', '0' %>
+    <%= check_box_tag 'settings[enable_target_notifications]', '1',
+                      ['1', 1, true, 'true'].include?(@settings['enable_target_notifications']) %>
+  </p>
+  <p>
+    <label for="settings_enable_break_notifications"><%= l(:hm_settings_enable_break_notifications) %></label>
+    <%= hidden_field_tag 'settings[enable_break_notifications]', '0' %>
+    <%= check_box_tag 'settings[enable_break_notifications]', '1',
+                      ['1', 1, true, 'true'].include?(@settings['enable_break_notifications']) %>
+  </p>
+  <p>
+    <label for="settings_eu_max_daily_minutes"><%= l(:hm_settings_eu_max_daily) %></label>
+    <%= text_field_tag 'settings[eu_max_daily_minutes]',
+                       @settings['eu_max_daily_minutes'], size: 6 %>
+  </p>
+  <p>
+    <label for="settings_eu_break_required_after_minutes"><%= l(:hm_settings_eu_break_required) %></label>
+    <%= text_field_tag 'settings[eu_break_required_after_minutes]',
+                       @settings['eu_break_required_after_minutes'], size: 6 %>
+  </p>
+  <p>
+    <label for="settings_poll_interval_seconds"><%= l(:hm_settings_poll_interval) %></label>
+    <%= text_field_tag 'settings[poll_interval_seconds]',
+                       @settings['poll_interval_seconds'], size: 4 %>
+  </p>
+</div>
+
+<div class="hm-tc-compliance">
+  <h4><%= l(:label_hm_timeclock_compliance_note) %></h4>
+  <p><%= l(:label_hm_timeclock_eu_compliance) %></p>
+</div>

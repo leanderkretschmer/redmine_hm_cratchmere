@@ -1,0 +1,45 @@
+<% content_for :header_tags do %>
+  <%= stylesheet_link_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
+<% end %>
+
+<div class="contextual">
+  <%= link_to l(:label_hm_timeclock_navbar), hm_timeclock_path, class: 'icon icon-time' %>
+</div>
+
+<h2><%= l(:label_hm_timeclock_settings) %></h2>
+
+<%= form_with model: @user_setting,
+              url: edit_hm_timeclock_settings_path,
+              method: :patch,
+              scope: :hm_user_setting,
+              local: true,
+              html: { class: 'hm-tc-settings-form' } do |f| %>
+  <div class="box tabular">
+    <p>
+      <%= f.label :daily_target_minutes, l(:label_hm_timeclock_required_daily) %>
+      <%= f.number_field :daily_target_minutes, min: 0, value: @user_setting.daily_target_minutes %>
+    </p>
+    <p>
+      <%= f.label :weekly_target_minutes, l(:label_hm_timeclock_required_weekly) %>
+      <%= f.number_field :weekly_target_minutes, min: 0, value: @user_setting.weekly_target_minutes %>
+    </p>
+    <p>
+      <%= f.label :max_break_minutes, l(:label_hm_timeclock_max_break) %>
+      <%= f.number_field :max_break_minutes, min: 0, value: @user_setting.max_break_minutes %>
+    </p>
+    <p>
+      <%= f.label :notify_target_reached, l(:label_hm_timeclock_notify_target) %>
+      <%= f.check_box :notify_target_reached %>
+    </p>
+    <p>
+      <%= f.label :notify_break_over, l(:label_hm_timeclock_notify_break) %>
+      <%= f.check_box :notify_break_over %>
+    </p>
+  </div>
+  <p><%= submit_tag l(:button_hm_timeclock_save_settings), class: 'button-positive' %></p>
+<% end %>
+
+<div class="hm-tc-compliance">
+  <h4><%= l(:label_hm_timeclock_compliance_note) %></h4>
+  <p><%= l(:label_hm_timeclock_eu_compliance) %></p>
+</div>

@@ -1,0 +1,38 @@
+<%
+  totals = hm_totals_by_day(entries, user.time_zone)
+  cells  = hm_calendar_cells(month)
+  day_names = (I18n.t('date.abbr_day_names') || %w[Sun Mon Tue Wed Thu Fri Sat]).rotate(1)
+%>
+<div class="hm-tc-calendar">
+  <div class="hm-tc-calendar-nav">
+    <%= link_to '«', base_path.call(month.prev_month), class: 'hm-tc-cal-nav-btn' %>
+    <span class="hm-tc-calendar-title"><%= I18n.l(month, format: '%B %Y') %></span>
+    <%= link_to '»', base_path.call(month.next_month), class: 'hm-tc-cal-nav-btn' %>
+  </div>
+  <table class="hm-tc-calendar-grid">
+    <thead>
+      <tr>
+        <% day_names.each do |dn| %>
+          <th><%= dn %></th>
+        <% end %>
+      </tr>
+    </thead>
+    <tbody>
+      <% cells.each_slice(7) do |week| %>
+        <tr>
+          <% week.each do |day| %>
+            <td class="<%= 'hm-tc-cal-empty' if day.nil? %><%= ' hm-tc-cal-today' if day == Date.current %><%= ' hm-tc-cal-weekend' if day && [6, 7].include?(day.cwday) %>">
+              <% if day %>
+                <div class="hm-tc-cal-date"><%= day.day %></div>
+                <% sec = totals[day].to_i %>
+                <% if sec > 0 %>
+                  <div class="hm-tc-cal-hours"><%= hm_format_seconds(sec) %></div>
+                <% end %>
+              <% end %>
+            </td>
+          <% end %>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</div>
