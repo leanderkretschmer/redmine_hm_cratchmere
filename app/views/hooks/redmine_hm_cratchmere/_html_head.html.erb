@@ -1,7 +1,17 @@
 <% if User.current.logged? %>
   <%= stylesheet_link_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
   <%= javascript_include_tag 'hm_timeclock', plugin: 'redmine_hm_cratchmere' %>
-  <% poll = (Setting.plugin_redmine_hm_cratchmere || {})['poll_interval_seconds'].to_i %>
-  <% poll = 30 unless poll.positive? %>
-  <%= javascript_tag "window.HmTimeclock = window.HmTimeclock || {}; window.HmTimeclock.bootstrap = { statusUrl: '#{j hm_timeclock_status_path(format: :json)}', pollIntervalSeconds: #{poll} };" %>
+  <%
+    poll = (Setting.plugin_redmine_hm_cratchmere || {})['poll_interval_seconds'].to_i
+    poll = 30 unless poll.positive?
+    snapshot = (RedmineHmCratchmere::Snapshot.new(User.current).to_h rescue nil)
+  %>
+  <%= javascript_tag(
+        "window.HmTimeclock = window.HmTimeclock || {};\n" \
+        "window.HmTimeclock.bootstrap = {\n" \
+        "  statusUrl: '#{j hm_timeclock_status_path(format: :json)}',\n" \
+        "  pollIntervalSeconds: #{poll},\n" \
+        "  snapshot: #{snapshot ? snapshot.to_json : 'null'}\n" \
+        "};"
+      ) %>
 <% end %>

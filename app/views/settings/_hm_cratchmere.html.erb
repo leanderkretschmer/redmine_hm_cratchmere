@@ -32,23 +32,8 @@
                       ['1', 1, true, 'true'].include?(@settings['enable_break_notifications']) %>
   </p>
   <p>
-    <label for="settings_eu_max_daily_minutes"><%= l(:hm_settings_eu_max_daily) %></label>
-    <%= text_field_tag 'settings[eu_max_daily_minutes]',
-                       @settings['eu_max_daily_minutes'], size: 6 %>
-  </p>
-  <p>
-    <label for="settings_eu_break_required_after_minutes"><%= l(:hm_settings_eu_break_required) %></label>
-    <%= text_field_tag 'settings[eu_break_required_after_minutes]',
-                       @settings['eu_break_required_after_minutes'], size: 6 %>
-  </p>
-  <p>
     <label for="settings_poll_interval_seconds"><%= l(:hm_settings_poll_interval) %></label>
     <%= text_field_tag 'settings[poll_interval_seconds]',
                        @settings['poll_interval_seconds'], size: 4 %>
   </p>
-</div>
-
-<div class="hm-tc-compliance">
-  <h4><%= l(:label_hm_timeclock_compliance_note) %></h4>
-  <p><%= l(:label_hm_timeclock_eu_compliance) %></p>
 </div>

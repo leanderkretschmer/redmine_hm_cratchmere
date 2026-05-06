@@ -70,8 +70,3 @@
       month: @month, entries: @entries_month, user: User.current,
       base_path: ->(m) { hm_timeclock_path(month: m.strftime('%Y-%m')) }
     } %>
-
-<div class="hm-tc-compliance">
-  <h4><%= l(:label_hm_timeclock_compliance_note) %></h4>
-  <p><%= l(:label_hm_timeclock_eu_compliance) %></p>
-</div>

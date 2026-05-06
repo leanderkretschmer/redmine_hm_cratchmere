@@ -31,8 +31,6 @@ module RedmineHmCratchmere
       daily_target_seconds = @setting.effective_daily_target_minutes.to_i * 60
       max_break_seconds    = @setting.effective_max_break_minutes.to_i * 60
       overtime_threshold   = (positive_int(settings['overtime_threshold_minutes']) || 480) * 60
-      eu_break_after       = (positive_int(settings['eu_break_required_after_minutes']) || 360) * 60
-      eu_max_daily         = (positive_int(settings['eu_max_daily_minutes']) || 600) * 60
       poll_interval        = positive_int(settings['poll_interval_seconds']) || 30
 
       {
@@ -46,16 +44,12 @@ module RedmineHmCratchmere
         daily_target_seconds: daily_target_seconds,
         max_break_seconds: max_break_seconds,
         overtime_threshold_seconds: overtime_threshold,
-        eu_break_required_after_seconds: eu_break_after,
-        eu_max_daily_seconds: eu_max_daily,
         notify_target_reached: !!@setting.notify_target_reached && truthy?(settings['enable_target_notifications']),
         notify_break_over:     !!@setting.notify_break_over     && truthy?(settings['enable_break_notifications']),
         poll_interval_seconds: poll_interval,
         labels: {
           target_reached: I18n.t(:hm_timeclock_notify_target_reached),
-          break_over:     I18n.t(:hm_timeclock_notify_break_over),
-          break_required: I18n.t(:label_hm_timeclock_break_required),
-          max_daily:      I18n.t(:label_hm_timeclock_max_daily_exceeded)
+          break_over:     I18n.t(:hm_timeclock_notify_break_over)
         }
       }
     end

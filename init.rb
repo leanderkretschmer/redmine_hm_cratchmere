@@ -8,7 +8,7 @@ end
 Redmine::Plugin.register :redmine_hm_cratchmere do
   name 'Redmine HR Cratchmere'
   author 'Leander Kretschmer'
-  description 'EU-konformes Personal-Modul für Redmine 6 mit Stempeluhr in der Topbar (Start/Pause/Stopp), Monatskalender, Sollarbeitszeit, Pausen- und Überstunden-Hinweisen sowie Admin-Übersicht.'
+  description 'Personal-Modul für Redmine 6 mit Stempeluhr in der Topbar (Start/Pause/Stopp), Monatskalender, Sollarbeitszeit, Pausen- und Überstunden-Hinweisen sowie Admin-Übersicht.'
   version '0.1.0'
   url 'https://github.com/leanderkretschmer/redmine_hm_cratchmere'
   author_url 'https://github.com/leanderkretschmer'
@@ -23,8 +23,6 @@ Redmine::Plugin.register :redmine_hm_cratchmere do
       'overtime_threshold_minutes'      => 480,
       'enable_target_notifications'     => '1',
       'enable_break_notifications'      => '1',
-      'eu_max_daily_minutes'            => 600,
-      'eu_break_required_after_minutes' => 360,
       'poll_interval_seconds'           => 30
     },
     partial: 'settings/hm_cratchmere'
