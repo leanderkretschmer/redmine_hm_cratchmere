@@ -4,9 +4,11 @@
   absences_by_day = local_assigns[:absences_by_day]
   day_link        = local_assigns[:day_link]
   show_users      = local_assigns[:show_users_in_absence]
+  clickable       = local_assigns[:clickable_for_absence]
+  default_kind    = local_assigns[:default_absence_kind]
   day_names       = (I18n.t('date.abbr_day_names') || %w[Sun Mon Tue Wed Thu Fri Sat]).rotate(1)
 %>
-<div class="hm-tc-calendar">
+<div class="hm-tc-calendar" <%= "data-default-absence-kind=\"#{h default_kind}\"".html_safe if default_kind %>>
   <div class="hm-tc-calendar-nav">
     <%= link_to '«', base_path.call(month.prev_month), class: 'hm-tc-cal-nav-btn' %>
     <span class="hm-tc-calendar-title"><%= I18n.l(month, format: '%B %Y') %></span>
@@ -17,6 +19,9 @@
         <span class="hm-tc-cal-legend-swatch hm-tc-cal-legend-sickness"></span> <%= l(:label_hm_hr_sickness) %>
         <span class="hm-tc-cal-legend-swatch hm-tc-cal-legend-pending"></span> <%= l(:label_hm_absence_pending_legend) %>
       </span>
+    <% end %>
+    <% if clickable %>
+      <span class="hm-tc-cal-hint"><%= l(:label_hm_calendar_click_hint) %></span>
     <% end %>
   </div>
   <table class="hm-tc-calendar-grid">
@@ -36,6 +41,7 @@
               cell_classes << 'hm-tc-cal-empty'   unless day
               cell_classes << 'hm-tc-cal-today'   if day && day == Date.current
               cell_classes << 'hm-tc-cal-weekend' if day && [6, 7].include?(day.cwday)
+              cell_classes << 'hm-tc-cal-clickable' if day && clickable && !day_link
 
               day_absences = (day && absences_by_day) ? (absences_by_day[day] || []) : []
               if day_absences.any? && !show_users
@@ -48,8 +54,13 @@
                   cell_classes << 'hm-tc-cal-pending-sickness' if day_absences.select { |a| a.kind == HmAbsence::KIND_SICKNESS }.all?(&:requested?)
                 end
               end
+
+              cell_attrs = +%(class="#{cell_classes.join(' ')}")
+              if day && clickable && !day_link
+                cell_attrs << %( data-date="#{day.iso8601}")
+              end
             %>
-            <td class="<%= cell_classes.join(' ') %>">
+            <td <%= cell_attrs.html_safe %>>
               <% if day %>
                 <% if day_link %>
                   <%= link_to day_link.call(day), class: 'hm-tc-cal-day-link' do %>

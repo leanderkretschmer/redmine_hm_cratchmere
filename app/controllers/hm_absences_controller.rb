@@ -1,8 +1,26 @@
 class HmAbsencesController < ApplicationController
   before_action :require_login
-  before_action :find_absence
+  before_action :find_absence, except: [:create]
 
   helper :hm_timeclock
+
+  def create
+    permitted = params.require(:hm_absence).permit(:kind, :starts_on, :ends_on, :reason)
+    unless HmAbsence::KINDS.include?(permitted[:kind])
+      flash[:error] = l(:notice_hm_absence_forbidden)
+      return redirect_back(fallback_location: hm_timeclock_path)
+    end
+    @absence = HmAbsence.new(permitted.merge(
+      user_id: User.current.id,
+      status: HmAbsence::STATUS_REQUESTED
+    ))
+    if @absence.save
+      flash[:notice] = l(:notice_hm_absence_requested)
+    else
+      flash[:error] = @absence.errors.full_messages.join(', ')
+    end
+    redirect_back(fallback_location: hm_timeclock_path)
+  end
 
   def edit
     return unless authorize_edit!

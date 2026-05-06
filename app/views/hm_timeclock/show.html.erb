@@ -82,5 +82,8 @@
 <%= render partial: 'calendar', locals: {
       month: @month, entries: @entries_month, user: User.current,
       base_path: ->(m) { hm_timeclock_path(month: m.strftime('%Y-%m')) },
-      absences_by_day: @absences_by_day
+      absences_by_day: @absences_by_day,
+      clickable_for_absence: true
     } %>
+
+<%= render partial: 'absence_modal' %>

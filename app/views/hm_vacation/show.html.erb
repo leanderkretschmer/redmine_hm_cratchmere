@@ -19,5 +19,9 @@
 <%= render partial: 'hm_timeclock/calendar', locals: {
       month: @month, entries: [], user: User.current,
       base_path: ->(m) { hm_vacation_path(month: m.strftime('%Y-%m')) },
-      absences_by_day: @absences_by_day
+      absences_by_day: @absences_by_day,
+      clickable_for_absence: true,
+      default_absence_kind: HmAbsence::KIND_VACATION
     } %>
+
+<%= render partial: 'hm_timeclock/absence_modal' %>

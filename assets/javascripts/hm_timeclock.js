@@ -76,6 +76,59 @@
     return null;
   }
 
+  function setupAbsenceModal() {
+    var modal = document.getElementById('hm-absence-modal');
+    if (!modal) return;
+    if (modal.dataset.hmReady === '1') return;
+    modal.dataset.hmReady = '1';
+
+    function openModal(date, kindHint) {
+      var startEl = modal.querySelector('#hm_absence_starts_on');
+      var endEl   = modal.querySelector('#hm_absence_ends_on');
+      var kindEl  = modal.querySelector('#hm_absence_kind');
+      if (date && startEl) startEl.value = date;
+      if (date && endEl)   endEl.value   = date;
+      if (kindHint && kindEl) kindEl.value = kindHint;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      var first = modal.querySelector('#hm_absence_kind, #hm_absence_starts_on');
+      if (first) try { first.focus(); } catch (e) {}
+    }
+    function closeModal() {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+    }
+
+    modal.addEventListener('click', function (e) {
+      if (e.target === modal) closeModal();
+    });
+    var cancelBtn = modal.querySelector('.hm-tc-absence-modal-cancel');
+    if (cancelBtn) cancelBtn.addEventListener('click', closeModal);
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && modal.classList.contains('open')) closeModal();
+    });
+
+    var startEl = modal.querySelector('#hm_absence_starts_on');
+    var endEl   = modal.querySelector('#hm_absence_ends_on');
+    if (startEl && endEl) {
+      startEl.addEventListener('change', function () {
+        if (!endEl.value || endEl.value < startEl.value) endEl.value = startEl.value;
+      });
+    }
+
+    var calendars = document.querySelectorAll('.hm-tc-calendar');
+    calendars.forEach(function (cal) {
+      var defaultKind = cal.getAttribute('data-default-absence-kind') || '';
+      var cells = cal.querySelectorAll('td.hm-tc-cal-clickable[data-date]');
+      cells.forEach(function (cell) {
+        cell.addEventListener('click', function (e) {
+          if (e.target.closest('a, button, .hm-tc-cal-day-link')) return;
+          openModal(cell.getAttribute('data-date'), defaultKind);
+        });
+      });
+    });
+  }
+
   function setupHrDropdown() {
     var navLink = findNavLink();
     if (!navLink) return;
@@ -374,6 +427,7 @@
     }
 
     setupHrDropdown();
+    setupAbsenceModal();
 
     if (!snapshot) {
       fetchStatus().then(tick);

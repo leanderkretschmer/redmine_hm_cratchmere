@@ -18,6 +18,7 @@ RedmineApp::Application.routes.draw do
   get  'hm_sickness', to: 'hm_sickness#show',   as: 'hm_sickness'
   post 'hm_sickness', to: 'hm_sickness#create'
 
+  post   'hm_absences',              to: 'hm_absences#create',  as: 'hm_absences'
   get    'hm_absences/:id/edit',     to: 'hm_absences#edit',    as: 'edit_hm_absence'
   patch  'hm_absences/:id',          to: 'hm_absences#update',  as: 'hm_absence'
   put    'hm_absences/:id',          to: 'hm_absences#update'

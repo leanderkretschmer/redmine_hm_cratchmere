@@ -255,6 +255,54 @@ table.hm-tc-calendar-grid {
 }
 .hm-tc-cal-day-link { text-decoration: none; color: inherit; display: block; }
 .hm-tc-cal-day-link:hover .hm-tc-cal-date { text-decoration: underline; color: #1abc9c; }
+.hm-tc-cal-clickable { cursor: pointer; transition: box-shadow 0.12s ease; }
+.hm-tc-cal-clickable:hover {
+  box-shadow: inset 0 0 0 2px #1abc9c;
+}
+.hm-tc-cal-hint {
+  margin-left: auto;
+  font-size: 0.85em;
+  color: #6c7a89;
+  font-style: italic;
+}
+.hm-tc-absence-modal-inner {
+  text-align: left;
+  min-width: 360px;
+  max-width: 520px;
+  border-top: 4px solid #3498db;
+}
+.hm-tc-absence-modal-title { margin: 0 0 1em; color: #2c3e50; }
+.hm-tc-absence-modal-row { margin-bottom: 0.7em; }
+.hm-tc-absence-modal-row label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.2em;
+  color: #2c3e50;
+}
+.hm-tc-absence-modal-row input[type="date"],
+.hm-tc-absence-modal-row select,
+.hm-tc-absence-modal-row textarea {
+  width: 100%;
+  padding: 0.4em 0.5em;
+  font-size: 1em;
+  box-sizing: border-box;
+}
+.hm-tc-absence-modal-actions {
+  display: flex;
+  gap: 0.6em;
+  margin-top: 1em;
+  justify-content: flex-end;
+}
+.hm-tc-absence-modal-cancel {
+  padding: 0.5em 1.2em;
+  background: #ecf0f1;
+  color: #2c3e50;
+  border: 1px solid #bdc3c7;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 600;
+}
+.hm-tc-absence-modal-cancel:hover { background: #bdc3c7; }
 .hm-tc-cal-users { margin-top: 0.25em; line-height: 1.4; }
 .hm-tc-cal-user-pill {
   display: inline-block;

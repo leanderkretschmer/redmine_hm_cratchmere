@@ -1,0 +1,31 @@
+<div id="hm-absence-modal" class="hm-tc-popup" role="dialog" aria-modal="true" aria-hidden="true">
+  <div class="hm-tc-popup-inner hm-tc-absence-modal-inner">
+    <h3 class="hm-tc-absence-modal-title"><%= l(:label_hm_absence_modal_title) %></h3>
+    <%= form_with url: hm_absences_path, method: :post, scope: :hm_absence, local: true,
+                  html: { id: 'hm-absence-modal-form' } do |f| %>
+      <div class="hm-tc-absence-modal-row">
+        <%= f.label :kind, l(:label_hm_absence_kind) %>
+        <%= f.select :kind,
+                     [[l(:label_hm_hr_vacation), HmAbsence::KIND_VACATION],
+                      [l(:label_hm_hr_sickness), HmAbsence::KIND_SICKNESS]],
+                     {}, { id: 'hm_absence_kind' } %>
+      </div>
+      <div class="hm-tc-absence-modal-row">
+        <%= f.label :starts_on, l(:label_hm_absence_starts_on) %>
+        <%= f.date_field :starts_on, required: true, id: 'hm_absence_starts_on' %>
+      </div>
+      <div class="hm-tc-absence-modal-row">
+        <%= f.label :ends_on, l(:label_hm_absence_ends_on) %>
+        <%= f.date_field :ends_on, required: true, id: 'hm_absence_ends_on' %>
+      </div>
+      <div class="hm-tc-absence-modal-row">
+        <%= f.label :reason, l(:label_hm_absence_reason) %>
+        <%= f.text_area :reason, rows: 3, id: 'hm_absence_reason' %>
+      </div>
+      <div class="hm-tc-absence-modal-actions">
+        <%= submit_tag l(:button_hm_absence_request), class: 'button-positive' %>
+        <button type="button" class="hm-tc-absence-modal-cancel"><%= l(:button_cancel) %></button>
+      </div>
+    <% end %>
+  </div>
+</div>
